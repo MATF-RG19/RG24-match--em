@@ -33,6 +33,8 @@ int broj;
 GLdouble x_1, y_1, x_2, y_2;
 //prodnadjeni x i y u odnosu na niz
 GLdouble xp1, yp1, xp2, yp2;
+int pom_t;
+GLdouble pom_x, pom_y;
 
 int i_1, i_2, j_1, j_2;
 
@@ -42,6 +44,8 @@ static void on_reshape(int width, int height);
 static void on_keyboard(unsigned char key, int x, int y);
 static void on_mouse(int button, int state, int x, int y);
 static void on_timer(int value);
+//menja i u matrici i nizu vrednosti
+void change_values();
 
 //fja koja iscrtava objekte na veliku tablu nakon svake animacije
 //tj. nakon swapovanja, prikupljanja objekata i iscrtavanja novih nakon sto prethodni
@@ -216,6 +220,7 @@ static void on_timer(int value){
     
    if(animation_parameter > 1){
        
+        change_values();
         animation_ongoing = 0;
         animation_parameter = 0;
         
@@ -244,20 +249,21 @@ void move_on_x(double animation_parameter, int p){
             
         if(x == xp1 && y == yp1){
             glPushMatrix();
-            if(animation_parameter == 1.0)
-                glTranslatef(0.0, 0.0, -0.2);
-            printf("x2: %f, x2 + ap: %f, z: %f\n",x, x + animation_parameter*(0.5*p), z);
-            glTranslatef(x + animation_parameter*(0.5*p), y + 0.0, z + 0.2);
-            draw_one(type);
-                objects[k].x += p*0.5;
-        glPopMatrix();
+                if(animation_parameter == 1.0){
+                    glTranslatef(0.0, 0.0, -0.5);
+                }
+                printf("x2: %f, x2 + ap: %f, z: %f\n",x, x + animation_parameter*(0.5*p), z);
+                glTranslatef(x + animation_parameter*(0.5*p), y + 0.0, z + 0.5);
+                draw_one(type);
+            glPopMatrix();
+                //objects[k].x += p*0.5;
         }
         else if(x == xp2 && y == yp2){
             glPushMatrix();
                 glTranslatef(x + animation_parameter*(-0.5*p), y + 0.0, z + 0.0);
                 draw_one(type);
             glPopMatrix();
-                objects[k].x -= p*0.5;
+                //objects[k].x -= p*0.5;
         }
         else{
             glPushMatrix();
@@ -283,18 +289,18 @@ void move_on_y(double animation_parameter, int p){
         if(y == yp1 && x == xp1){
             glPushMatrix();
                 if(animation_parameter == 1.0)
-                    glTranslatef(0.0, 0.0, -0.2);
-                glTranslatef(x + 0.0, y + animation_parameter*(-0.5*p), z + 0.2);
+                    glTranslatef(0.0, 0.0, -0.5);
+                glTranslatef(x + 0.0, y + animation_parameter*(-0.5*p), z + 0.5);
                 draw_one(type);
-                objects[k].y -= p*0.5;
             glPopMatrix();
+                //objects[k].y -= p*0.5;
         }
         else if(y == yp2 && x == xp2){
             glPushMatrix();
                 glTranslatef(x + 0.0, y + animation_parameter*(0.5*p), z + 0.0);
                 draw_one(type);
             glPopMatrix();
-            objects[k].y += p*0.5;
+            //objects[k].y += p*0.5;
         }
         else{
             glPushMatrix();
@@ -314,7 +320,7 @@ void draw_objects(int animation_ongoing, double animation_parameter){
             
             //pomeramo po x
             if(yp1 == yp2){
-                if(xp1 < xp2)
+                if(xp1 < xp2)                                       
                     move_on_x(animation_parameter, 1);
                 else
                     move_on_x(animation_parameter, -1);
@@ -327,7 +333,7 @@ void draw_objects(int animation_ongoing, double animation_parameter){
                 else
                     move_on_y(animation_parameter, -1);
             }
-        }
+    }
     else{
         for(int k = 0; k < OBJECTS_MAX; k++){
                 
@@ -372,4 +378,41 @@ void find_objects(GLdouble x_1, GLdouble y_1, GLdouble x_2, GLdouble y_2){
     }
     
     //printf("xp1: %f, yp1: %f, xp2: %f, yp2: %f\n", xp1, yp1, xp2, yp2);
+}
+void change_values(){
+    /*pom_t = objects[0].type;
+    printf("***** %f, %f *****\n", pom_x, objects[1].x);
+    objects[0].type = objects[1].type;
+    objects[1].type = pom_t;
+    for(int k = 0; k < 5;k++)
+        printf("novi type: %d %f %f\n", objects[k].type, objects[k].x, objects[k].y);*/
+    int type;
+    GLdouble x, y;
+    int k1, type1;
+    int k2, type2;
+    
+    for(int k = 0; k < OBJECTS_MAX; k++){
+            
+        type = objects[k].type;
+        x = objects[k].x;
+        y = objects[k].y;
+            
+        if(x == xp1 && y == yp1){
+            k1 = k;
+            type1 = type;
+        }
+        else if(x == xp2 && y == yp2){
+            k2 = k;
+            type2 = type;
+            
+        }
+    }
+    
+    pom_t = type1;
+    objects[k1].type = type2;
+    objects[k2].type = pom_t;
+    
+    for(int k = 0; k < 5;k++)
+        printf("novi type: %d %f %f\n", objects[k].type, objects[k].x, objects[k].y);
+    
 }
