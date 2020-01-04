@@ -46,6 +46,7 @@ void draw_tables(){
 //i kasnije pracenje elemenata koji su uklonjeni sa table
 int** make_matrix(){
 	
+    srand(time(NULL));
 	int** matrix;
 	
 	matrix = malloc(6 * sizeof(int*));
@@ -57,9 +58,34 @@ int** make_matrix(){
 		check_error(matrix[i] != NULL, "Neuspesna alokacija memorije!");
 	}
 
-	for (i = 0; i < 6; i++){
+	/*for (i = 0; i < 6; i++){
 		for (j = 0; j < 7; j++){
 			matrix[i][j] = (int)(rand()%5);
+		}
+	}*/
+	
+    //matrica se popunjava tako da se pri inicijalnom postavljanju elemenata na tablu
+    //ne nalaze tri ista elementa u redu/koloni jedan do drugog
+	int color_type;
+    
+	for (i = 0; i < 6; i++){
+		for (j = 0; j < 7; j++){
+            do{
+                color_type = (int)(rand()%5);
+            }
+            while (      
+                         //da nemam tri u redu
+                         (j >= 2 &&
+                         matrix[i][j-1] == color_type &&
+                         matrix[i][j-2] == color_type)
+                    ||
+                         //da nemam tri u koloni
+                         (i >= 2 &&
+                         matrix[i-1][j] == color_type &&
+                         matrix[i-2][j] == color_type));
+            
+            //if(j>=2 || i>=2)
+			matrix[i][j] = color_type;
 		}
 	}
 
@@ -75,8 +101,10 @@ int i, j;
 		}
 		printf("\n");
 	}
+	printf("\n");
 }
-//inicijalno postavljeni objekti u niz u odnosu na matricu
+//inicijalno postavljeni objekti u niz objects u odnosu na matricu
+//matrica samo odredjuje tip objekta
 void init_objects(int** matrix){
     
         int k = 0;
@@ -91,11 +119,23 @@ void init_objects(int** matrix){
             }
         }
         
-        for(int k = 0; k < OBJECTS_MAX; k++){
+        /*for(int k = 0; k < OBJECTS_MAX; k++){
                 printf("type: %d,x: %lf,y: %lf,z: %lf\n", objects[k].type, objects[k].x, objects[k].y, objects[k].z);
-        }
+                if(k%7 == 6)
+                    printf("\n");
+        }*/
         
     
+}
+//samo ispisivanje niza objects u terminal radi provere u toku rada
+void print_objects(){
+    printf("***************\n");
+    for(int k = 0; k < OBJECTS_MAX; k++){
+                printf("type: %d,x: %lf,y: %lf,z: %lf\n", objects[k].type, objects[k].x, objects[k].y, objects[k].z);
+                if(k%7 == 6)
+                    printf("\n");
+    }
+    printf("***************\n");
 }
 //crta odredjeni oblik u odredjenoj boji u odnosu na prosledjenu vrednost
 void draw_one(int type){
@@ -108,12 +148,12 @@ void draw_one(int type){
             break;
         //crvena kocka
         case 1:
-            glColor3f(1, 0, 0);
+            glColor3f(0.9, 0, 0);
             glutSolidCube(0.3);
             break;
         //zelena kocka
         case 2:
-            glColor3f(0, 1, 0);
+            glColor3f(0, 0.9, 0);
             glutSolidCube(0.3);
             break;
         //plavi cajnik
@@ -135,7 +175,7 @@ void draw_one(int type){
 
 //iscrtavanje elementa koji se skuplja
 //on se nalazi na levoj(manjoj) tabli
-void draw_on_side(int broj){
+void draw_side_one(int broj){
     
     //Zuta sfera
     if(broj == 0){
