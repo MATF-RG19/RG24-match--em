@@ -19,7 +19,8 @@
 //iscrtava table tj. pravougaonike na kojima su smesteni objekti
 void draw_tables(){
     //Podesava se prvi plavi pravougaonik, veci
-    glColor3f(0.74902, 0.847059, 0.847059);
+    //glColor3f(0.74902, 0.847059, 0.847059);
+    glColor3f(0.7, 0.9, 0.9);
     
    
     glBegin(GL_POLYGON);
@@ -30,11 +31,34 @@ void draw_tables(){
         glVertex3f (1.8, -1.8, 0.0);
     glEnd();
     
+    glEnable(GL_LINE_WIDTH);
+    glLineWidth(3);
+     glColor3f(0, 0.1, 0.7);
+    glBegin(GL_LINE_LOOP);
+        glNormal3f(1.0,0.0,0.0);
+        glVertex3f (-1.77, -1.75, 0.1);
+        glVertex3f (-1.77, 1.75, 0.1);
+        glVertex3f (1.77, 1.75, 0.1);
+        glVertex3f (1.77, -1.75, 0.1);
+    glEnd();
+    
     //Podesava se drugi zeleni pravougaonik, manji
-    glColor3f(0.560784, 0.737255, 0.560784);
+    //glColor3f(0.560784, 0.737255, 0.560784);
+    glColor3f(0.7, 0.9, 0.6);
     
      glBegin(GL_POLYGON);
         glNormal3f(1.0, 0.0, 0.0);
+        glVertex3f (-3.35, -1.2, 0.0);
+        glVertex3f (-3.35, 1.2, 0.0);
+        glVertex3f (-2.35, 1.2, 0.0);
+        glVertex3f (-2.35, -1.2, 0.0);
+    glEnd();
+    
+    glEnable(GL_LINE_WIDTH);
+    glLineWidth(5);
+    glColor3f(0, 0.5, 0.35);
+     glBegin(GL_LINE_LOOP);
+         glNormal3f(1.0, 0.0, 0.0);
         glVertex3f (-3.35, -1.2, 0.0);
         glVertex3f (-3.35, 1.2, 0.0);
         glVertex3f (-2.35, 1.2, 0.0);

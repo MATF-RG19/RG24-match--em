@@ -21,6 +21,7 @@
 #include "../Headers/coordinates.h"
 #include "../Headers/draw.h"
 #include "../Headers/lighting.h"
+#include "../Headers/textures.h"
 
 typedef struct Pair{
     
@@ -104,6 +105,7 @@ void collect_objects(pair array[]);
 
 void drawString(float x, float y, float z, char* string);
 void tekst();
+void tekst2();
 
 int main(int argc, char **argv){
     
@@ -142,6 +144,7 @@ int main(int argc, char **argv){
     num = (int)(rand()%5);
     printf("num: %d\n", num);
 
+    initialize();
     //Program ulazi u glavnu petlju
     glutMainLoop();
 
@@ -199,10 +202,12 @@ static void on_mouse(int button, int state, int x, int y){
             
             find_objects(x_1, y_1, x_2, y_2);
             
+            //da li ovde????
+            find_a_match();
+            
             animation_ongoing = 1;
             glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
             
-            find_a_match();
             //animation_ongoing2 = 1;
             //glutTimerFunc(TIMER_INTERVAL, on_timer2, TIMER_ID);
     }
@@ -230,7 +235,7 @@ static void on_reshape(int width, int height){
 
 static void on_display(void){
     
-    
+    set_lighting();
     //Brise se prethodni sadrzaj prozora
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -252,9 +257,10 @@ static void on_display(void){
                0.0, 1.0, 0.0);
     
     //Podesava se osvetljenje
-    set_lighting();
+    //set_lighting();
     //Pomocne koor. linije
-    draw_coordinate_lines();
+    //draw_coordinate_lines();
+    textures();
 
     //Iscrtavaju se dve table na kojima se nalaze elementi za igru
     draw_tables();
@@ -264,6 +270,12 @@ static void on_display(void){
     draw_objects(/*animation_ongoing, animation_parameter*/);
     //Iscrtavanje elementa koji se prikuplja
     draw_on_side();
+    
+    
+    if(skupljeno >= 12){
+        tekst2();
+        //exit(0);
+    }
     
     //Nova slika se salje na ekran
     glutSwapBuffers();
@@ -307,6 +319,7 @@ static void on_timer2(int value){
     
    if(animation_parameter2 > 1){
        
+        find_a_match();
         animation_ongoing2 = 0;
         animation_parameter2 = 0;
         
@@ -451,17 +464,35 @@ void draw_objects(){
         if(found_column){
             found_column = 0;
             column_detected();
-            find_a_match();
-        }
+            //find_a_match();
+        }//ovde ti je bilo found_column
         else if(found_row){
+            found_row = 0;
+            row_detected();
+            //find_a_match();
+        }
+        else if(found_row && found_column){
+            found_row = 0;
             found_column = 0;
             row_detected();
-            find_a_match();
+            column_detected();
         }
         else{
-            animation_ongoing = 0;
+            /*animation_ongoing = 0;
             animation_ongoing2 = 0;
-            animation_ongoing3 = 0;
+            animation_ongoing3 = 0;*/
+            for(int k = 0; k < OBJECTS_MAX; k++){
+                
+            type = objects[k].type;
+            x = objects[k].x;
+            y = objects[k].y;
+            z = objects[k].z;
+            
+            glPushMatrix();
+                glTranslatef(x, y, z);
+                draw_one(type);
+            glPopMatrix();
+        }
             find_a_match();
         }
     }
@@ -558,12 +589,59 @@ void change_values(){
 //trazi match u redu ili koloni, ovo je fja omotac oko naredne dve fje
 void find_a_match(){
     
-    find_column();
-    find_row();
+    /*find_column();
+    find_row();*/
+     int num_of_columns = 0;
+        column_array[0].i = -1;
+        column_array[0].j = -1;
+        column_array[1].i = -1;
+        column_array[1].j = -1;
+        column_array[2].i = -1;
+        column_array[2].j = -1;
+    
+    int num_of_rows = 0;
+        row_array[0].i = -1;
+        row_array[0].j = -1;
+        row_array[1].i = -1;
+        row_array[1].j = -1;
+        row_array[2].i = -1;
+        row_array[2].j = -1;
+        
+   
+    for (int i = 0; i < 6; i++){
+            for (int j = 0; j < 7; j++){
+                if(i < 4 && matrix[i][j] == matrix[i+1][j] && matrix[i][j] == matrix[i+2][j]){
+                    num_of_columns++;
+                    found_column = 1;
+                    column_array[0].i = i;
+                    column_array[0].j = j;
+                    column_array[1].i = i+1;
+                    column_array[1].j = j;
+                    column_array[2].i = i+2;
+                    column_array[2].j = j;
+                    //ovde ide animacija nestajanja objekata i postavljanja novih na njihovo mesto
+                    collect_objects(column_array);
+                   // break;
+                }
+                else if(j < 5 && matrix[i][j] == matrix[i][j+1] && matrix[i][j] == matrix[i][j+2]){
+                    num_of_rows++;
+                    found_row = 1;
+                    row_array[0].i = i;
+                    row_array[0].j = j;
+                    row_array[1].i = i;
+                    row_array[1].j = j+1;
+                    row_array[2].i = i;
+                    row_array[2].j = j+2;
+                    //ovde ide animacija nestajanja objekata i postavljanja novih na njihovo mesto
+                    collect_objects(row_array);
+                    //break;
+                }
+            }
+        }
 }
 //trazi match u koloni i ukoliko ga nadje poziva fju koja
 //azurira vrednosti i poziva animaciju
-void find_column(){
+/*void find_column(){
     
         int num_of_columns = 0;
         column_array[0].i = -1;
@@ -586,13 +664,15 @@ void find_column(){
                     column_array[2].j = j;
                     //ovde ide animacija nestajanja objekata i postavljanja novih na njihovo mesto
                     collect_objects(column_array);
+                   // break;
                 }
             }
         }
-}
+        //collect_objects(column_array);
+}*/
 //trazi match u redu i ukoliko ga nadje poziva fju koja
 //azurira vrednosti i poziva animaciju
-void find_row(){
+/*void find_row(){
     
         int num_of_rows = 0;
        //pair column_array[3];
@@ -603,7 +683,7 @@ void find_row(){
         row_array[2].i = -1;
         row_array[2].j = -1;
         
-		for (int i = 0; i < 5; i++){
+		for (int i = 0; i < 6; i++){
             for (int j = 0; j <= 4; j++){
                 if(matrix[i][j] == matrix[i][j+1] && matrix[i][j] == matrix[i][j+2]){
                     num_of_rows++;
@@ -616,12 +696,14 @@ void find_row(){
                     row_array[2].j = j+2;
                     //ovde ide animacija nestajanja objekata i postavljanja novih na njihovo mesto
                     collect_objects(row_array);
+                    //break;
                 }
             }
         }
+        //collect_objects(row_array);
        // found_row = 0;
 
-}
+}*/
 // //fja koja azurira vrednosti nakon matchovanja i poziva animaciju
 void collect_objects(pair array[]){
     /*printf("[%d][%d], [%d][%d], [%d][%d]\n\n", column_array[0].i, column_array[0].j, column_array[1].i, column_array[1].j, column_array[2].i, column_array[2].j);*/
@@ -647,6 +729,7 @@ void collect_objects(pair array[]){
     if(found_num)
         collect_side_element();*/
     
+    //mozda ovaj kod moze da prosiri tako da gleda celu matricu da nema match nakon jednog swap
     do{
         proba = (int)rand()%5;
     }
@@ -664,6 +747,31 @@ void collect_objects(pair array[]){
     matrix[i][j] = proba;
     matrix[i_1][j_1] = proba1;
     matrix[i_2][j_2] = proba2;
+    
+    /*int color_type;
+    
+    for (i = 0; i < 6; i++){
+		for (j = 0; j < 7; j++){
+            do{
+                color_type = (int)(rand()%5);
+            }
+            while (      
+                         //da nemam tri u redu
+                         (j >= 2 &&
+                         matrix[i][j-1] == color_type &&
+                         matrix[i][j-2] == color_type)
+                    ||
+                         //da nemam tri u koloni
+                         (i >= 2 &&
+                         matrix[i-1][j] == color_type &&
+                         matrix[i-2][j] == color_type));
+            
+            //if(j>=2 || i>=2)
+			matrix[i][j] = color_type;
+		}
+	}
+	
+	init_objects(matrix);*/
     
    // printf("*****");
     //draw(matrix);
@@ -700,8 +808,8 @@ void column_detected(){
         if(typer == num){
             found_num = 1;
             skupljeno += 3;
-            if(skupljeno >= 12)
-                exit(0);
+            //if(skupljeno >= 12)
+                //exit(0);
             animation_ongoing3 = 1;
             glutTimerFunc(TIMER_INTERVAL3, on_timer3, TIMER_ID);
         }
@@ -756,8 +864,8 @@ void row_detected(){
         if(typer == num){
             found_num = 1;
             skupljeno += 3;
-            if(skupljeno >= 12)
-                exit(0);
+            //if(skupljeno >= 12)
+                //exit(0);
             animation_ongoing3 = 1;
             glutTimerFunc(TIMER_INTERVAL3, on_timer3, TIMER_ID);
         }
@@ -806,7 +914,8 @@ void drawString(float x, float y, float z, char *string) {
     
     int n = strlen(string);
     glPushMatrix();
-        glColor3f(1,0,0);
+        glNormal3f(1.0,0.0,0.0);
+        glColor3f(0.6,0.2,0.4);
         glRasterPos3f(x, y, z);
 
         for (int i = 0; i < n; i++) {
@@ -821,4 +930,11 @@ void tekst(){
     
     drawString(-2.75, 0.2, 0.5, prikupljeno);
 }
-
+void tekst2(){
+    char prikupljeno[20];
+    
+    sprintf(prikupljeno, "Congrats: %d / 12!", skupljeno);
+    
+   // drawString(-0.5, 2.0, 0.5, prikupljeno);
+    drawString(-2.95, -0.3, 0.5, prikupljeno);
+}
