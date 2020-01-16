@@ -269,12 +269,6 @@ static void on_keyboard(unsigned char key, int x, int y){
         //Zavrsava se program
         exit(0);
         break;
-    //za restartovanje animacije swapa
-    case 'r':
-    case 'R':
-        animation_parameter = 0;
-        glutPostRedisplay();
-        break;
     //za novu partiju
     case 's':
     case 'S':
