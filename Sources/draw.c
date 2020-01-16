@@ -7,7 +7,7 @@
 #include <string.h>
 
 #include "../Headers/draw.h"
-
+//pomocni makro za hvatanje greske prilikom alokacije memorije za matricu
 #define check_error(expr, Usermsg)\
     do{\
         if(!(expr)){\
@@ -18,11 +18,10 @@
 
 //iscrtava table tj. pravougaonike na kojima su smesteni objekti
 void draw_tables(){
-    //Podesava se prvi plavi pravougaonik, veci
-    //glColor3f(0.74902, 0.847059, 0.847059);
+    
+    //podesava se prvi plavi pravougaonik, veci
     glColor3f(0.7, 0.9, 0.9);
     
-   
     glBegin(GL_POLYGON);
         glNormal3f(1.0,0.0,0.0);
         glVertex3f (-1.8, -1.8, 0.0);
@@ -31,9 +30,10 @@ void draw_tables(){
         glVertex3f (1.8, -1.8, 0.0);
     glEnd();
     
+    //podesava se "ram" oko pravougaonika tj. njegovo oivicenje radi lepseg izgleda
     glEnable(GL_LINE_WIDTH);
     glLineWidth(3);
-     glColor3f(0, 0.1, 0.7);
+    glColor3f(0, 0.1, 0.7);
     glBegin(GL_LINE_LOOP);
         glNormal3f(1.0,0.0,0.0);
         glVertex3f (-1.77, -1.75, 0.1);
@@ -42,8 +42,7 @@ void draw_tables(){
         glVertex3f (1.77, -1.75, 0.1);
     glEnd();
     
-    //Podesava se drugi zeleni pravougaonik, manji
-    //glColor3f(0.560784, 0.737255, 0.560784);
+    //podesava se drugi zeleni pravougaonik, manji
     glColor3f(0.7, 0.9, 0.6);
     
      glBegin(GL_POLYGON);
@@ -54,6 +53,7 @@ void draw_tables(){
         glVertex3f (-2.35, -1.2, 0.0);
     glEnd();
     
+    //podesava se "ram" oko pravougaonika tj. njegovo oivicenje radi lepseg izgleda
     glEnable(GL_LINE_WIDTH);
     glLineWidth(5);
     glColor3f(0, 0.5, 0.35);
@@ -81,12 +81,6 @@ int** make_matrix(){
 		matrix[i] = malloc(7 * sizeof(int));
 		check_error(matrix[i] != NULL, "Neuspesna alokacija memorije!");
 	}
-
-	/*for (i = 0; i < 6; i++){
-		for (j = 0; j < 7; j++){
-			matrix[i][j] = (int)(rand()%5);
-		}
-	}*/
 	
     //matrica se popunjava tako da se pri inicijalnom postavljanju elemenata na tablu
     //ne nalaze tri ista elementa u redu/koloni jedan do drugog
@@ -108,7 +102,6 @@ int** make_matrix(){
                          matrix[i-1][j] == color_type &&
                          matrix[i-2][j] == color_type));
             
-            //if(j>=2 || i>=2)
 			matrix[i][j] = color_type;
 		}
 	}
@@ -142,14 +135,6 @@ void init_objects(int** matrix){
                 }
             }
         }
-        
-        /*for(int k = 0; k < OBJECTS_MAX; k++){
-                printf("type: %d,x: %lf,y: %lf,z: %lf\n", objects[k].type, objects[k].x, objects[k].y, objects[k].z);
-                if(k%7 == 6)
-                    printf("\n");
-        }*/
-        
-    
 }
 //samo ispisivanje niza objects u terminal radi provere u toku rada
 void print_objects(){

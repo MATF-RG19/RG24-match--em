@@ -3,6 +3,13 @@
 
 #define OBJECTS_MAX (42)
 
+/* struktura kojom opisujem pojedinacne objekte na tabli
+ * za svaki objekat se cuva njegova pozicija na tabli
+ * i tip koji moze biti: 0 - zuta sfera
+ *                       1 - crveni kvadar
+ *                       2 -zeleni kvadar
+ *                       3 - plavi cajnik
+ *                       4 - ljubicasti torus*/
 typedef struct Object{
     
     int type;
@@ -10,13 +17,16 @@ typedef struct Object{
     
 }object;
 
+/*niz u koji stavljam sve trenutne objekte na tabli
+ * kako tabla ima 6 redova i 7 kolona, niz svaki put ima 42 elementa*/
 object objects[OBJECTS_MAX];
 
 //crtanje pravougaonika(tabli) na kojima su objekti
 extern void draw_tables();
 
 //pravljenje i ispisivanje matrice u terminal
-//matrica samo sadrzi intove na osnovu kojih crtam objekat odredjene boje i oblika
+//matrica samo sadrzi intove na osnovu kojih crtam objekat odredjene boje i oblika 
+//(tj. svaki int predstavlja odredjeni tip definisan u strukturi object)
 //i kasnije za pracenje elemenata koje treba docrtati kada korisnik pokupi tri ista
 extern int** make_matrix();
 //ispisivanje matrice u terminal radi lakseg rada

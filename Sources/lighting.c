@@ -16,7 +16,6 @@ void set_lighting(){
     GLfloat light_diffuse[] = { 0.95, 0.95, 0.95, 1 };
     
     //spekularna komponenta svetlosti
-    //GLfloat light_specular[] = { 0.8, 0.8, 0.2, 1 };
     GLfloat light_specular[] = {1, 1, 1, 1,};
 
     //koeficijenti ambijentalne refleksije materijala
@@ -48,8 +47,10 @@ void set_lighting(){
     glMaterialfv(GL_FRONT, GL_SPECULAR, specular_coeffs);
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
+    //za prikaz boja koje i ocekujemo
     glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_NORMALIZE);
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,0);
+    //sencenje
     glShadeModel(GL_FLAT);
 }

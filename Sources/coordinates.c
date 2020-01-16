@@ -6,7 +6,7 @@
 
 void draw_coordinate_lines(void){
  
-//Iscrtavanje x ose
+//iscrtavanje x ose
 glPushMatrix();
     glColor3f(1,0,0);
     glBegin(GL_LINES);
@@ -16,7 +16,7 @@ glPushMatrix();
     glEnd();
 glPopMatrix();
 
-//Iscrtavanje y ose
+//iscrtavanje y ose
 glPushMatrix();
     glColor3f(0,1,0); 
     glBegin(GL_LINES);
@@ -26,7 +26,7 @@ glPushMatrix();
     glEnd();
 glPopMatrix();
 
-//Iscrtavanje z ose
+//iscrtavanje z ose
 glPushMatrix();
     glColor3f(0,0,1); 
     glBegin(GL_LINES);
