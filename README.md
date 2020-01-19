@@ -27,7 +27,7 @@ levim klikom misa na centar objekta "oznacite" prvi objekat zatim prevucite mis 
 <hr>
 
 ### :wrench: Uputsvo za instalaciju:
-* Projekat mozete preuzeti pomoću komande `https://github.com/MATF-RG19/RG24-match--em.git` <br>
+* Projekat mozete preuzeti pomoću komande `git clone https://github.com/MATF-RG19/RG24-match--em.git` <br>
 * Pozicionirajte se u direktorijum `RG24-match--em`, a zatim u direktorijum `Sources`
 * Pokrenite Makefile  sa komandom `make` <br>
 * Pokrenite program sa `./match`
