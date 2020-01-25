@@ -22,7 +22,8 @@ pre vaseg narednog poteza
 levim klikom misa na centar objekta "oznacite" prvi objekat zatim prevucite mis do centra zeljenog objekta sa kojim biste da razmenite mesta i tek tada otpustite mis <br> 
 * Dozvoljeno je razmenjivati objekat iskljucivo sa onima koji su susedno od njega(gore, dole, levo, desno od njega) <br>
 * Nije dozvoljeno razmenjivati objekat sa objektom dijagonalno od njega ili objektom koji mu nije susedan <br> 
-* Dozvoljeno je razmenjivati objekte iako to ne dovodi do spajanja objekata, dakle smete da setate objekat do bilo koje pozicije u zavisnosti kako vam odgovara(nedelja6.gif u Screenshots ima u sebi takvo kretanje kao primer)
+* Dozvoljeno je razmenjivati objekte iako to ne dovodi do spajanja objekata, dakle smete da setate objekat do bilo koje pozicije u zavisnosti kako vam odgovara(nedelja6.gif u Screenshots ima u sebi takvo kretanje kao primer), ali budite 
+pazljivi dok koristite ovu mogucnost jer je broj koraka ogranicen
 
 <hr>
 
