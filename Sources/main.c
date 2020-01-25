@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <string.h>
 
-#define TIMER_INTERVAL (30)
+#define TIMER_INTERVAL (20)
 #define TIMER_INTERVAL3 (50)
 #define TIMER_ID (0)
 
@@ -34,6 +34,8 @@ typedef struct Pair{
 }pair;
 //koliko je trenutno skupljeno objekata trazenog tipa(onog koji je iscrtan na levoj tabli)
 int skupljeno = 0;
+//broji korake
+int broj_koraka = 17;
 //flag koji sluzi kao pomoc sta treba iscrtati u on_display nakon sto se igrica ponovo pokrene na s ili S
 int flag = 0;
 //dimenzije prozora
@@ -144,7 +146,10 @@ void tekst();
 void tekst2();
 //ispisuje tekst o tome kako se ponovo moze odigrati nova partija
 void tekst3();
-
+//ispisuje tekst o broju koraka
+void tekst4();
+//game_over tekst
+void tekst5();
 int main(int argc, char **argv){
     
     
@@ -253,6 +258,7 @@ static void on_mouse(int button, int state, int x, int y){
            }
            //potez je regularan i moze se preci na pronalazenje objekata na koje je korisnik kliknuo
             else{
+                broj_koraka--;
                 find_objects(x_1, y_1, x_2, y_2);
                 animation_ongoing = 1;
                 glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
@@ -274,6 +280,7 @@ static void on_keyboard(unsigned char key, int x, int y){
     case 'S':
         flag = 0;
         skupljeno = 0;
+        broj_koraka = 17;
         num = (int)(rand()%5);
         matrix = make_matrix();
         init_objects(matrix);
@@ -321,7 +328,6 @@ static void on_display(void){
     //Iscrtavaju se dve table na kojima se nalaze elementi za igru
     draw_tables();
     //ispisuje tekst o kolicini skupljenih
-    if(flag == 0)
     tekst();
     //Iscrtavanje elemenata sa kojima se igra
     if(flag == 0)
@@ -329,14 +335,21 @@ static void on_display(void){
     //Iscrtavanje elementa koji se prikuplja
     if(flag == 0)
     draw_on_side();
+    //ispisuje tekst o broju koraka
+    if(flag == 0)
+    tekst4();
     
-    //info o pobedi
-    if(skupljeno >= 12){
-        flag = 1;
-        tekst2();
-        tekst3();
+    
+    if(skupljeno == 12 && broj_koraka >= 0){
+            flag = 1;
+            tekst2();
+            tekst3();
     }
-    
+    if(skupljeno < 12 && broj_koraka <= 0){
+            flag = 1;
+            tekst5();
+            tekst3();
+    }    
     //Nova slika se salje na ekran
     glutSwapBuffers();
     
@@ -505,12 +518,11 @@ void move_on_y(double animation_parameter, int p){
 }
 //iscrtava iznova objekte na tablu u zavisnosti od dela igrice koji se trenutno desava
 void draw_objects(){
+    
     int type;
     GLdouble x, y, z;
-    
     //swap
     if(animation_ongoing == 1){
-            
             //pomeramo po x
             if(yp1 == yp2){
                 if(xp1 < xp2)                                       
@@ -529,6 +541,7 @@ void draw_objects(){
     }
     //postavljanje novih objekata
     else if(animation_ongoing2 == 1){
+        
         if(found_column){
             found_column = 0;
             column_detected();
@@ -568,6 +581,8 @@ void draw_objects(){
         }
         
     }
+    
+  
 }
 //nakon klika misa na objekte koji se swapuju odredjuje im vrednosti u matrici(nizu)
 void find_objects(GLdouble x_1, GLdouble y_1, GLdouble x_2, GLdouble y_2){
@@ -635,7 +650,6 @@ void change_values(){
 }
 //trazi match u redu ili koloni, ovo je fja omotac oko naredne dve fje
 void find_a_match(){
-    
     //cuva koja tri objekta cine kolonu istih
      int num_of_columns = 0;
         column_array[0].i = -1;
@@ -764,7 +778,8 @@ void column_detected(){
             skupljeno += 3;
             animation_ongoing3 = 1;
             glutTimerFunc(TIMER_INTERVAL3, on_timer3, TIMER_ID);
-        }
+        }        
+        
         for(int k = 0; k < OBJECTS_MAX; k++){
                 
             type = objects[k].type;
@@ -810,6 +825,7 @@ void column_detected(){
 //u slucaju da su matchovana tri elementa u redu i vodi racuna o tome je li matchovan onaj 
 //koji se prikupljama i u slucaju da jeste uvecava njegov brojac
 void row_detected(){
+    
     int type;
     GLdouble x, y, z;
     int r = row_array[0].i * 7 + row_array[0].j;
@@ -820,6 +836,7 @@ void row_detected(){
             animation_ongoing3 = 1;
             glutTimerFunc(TIMER_INTERVAL3, on_timer3, TIMER_ID);
         }
+        
         for(int k = 0; k < OBJECTS_MAX; k++){
                 
             type = objects[k].type;
@@ -896,7 +913,18 @@ void tekst3(){
     
     sprintf(ispis, "To play again press 's' or 'S'");
     
-   // drawString(-0.5, 2.0, 0.5, prikupljeno);
-    //drawString(-2.95, -0.3, 0.5, prikupljeno);
     drawString(-0.5, -0.2, 0.1, ispis);
+}
+void tekst4(){
+    char moves[70];
+    
+    sprintf(moves, "moves left: %d", broj_koraka);
+
+    drawString(-2.95, -0.5, 0.5, moves);
+}
+void tekst5(){
+    char game_over[70];
+    
+    sprintf(game_over, "Game over, no moves left!");
+    drawString(-0.5, 0.0, 0.1, game_over);
 }
